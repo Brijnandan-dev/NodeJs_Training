@@ -1,0 +1,23 @@
+const { STATUS_CODES } = require("../../../../constants/constants");
+const AppError = require("../../../../utils/appErrors");
+const { getRoleData } = require("../service/getRoleService");
+
+const getRole = async(req, res, next) => {
+    try {
+
+        const { identifier } = req.body;
+
+        const roleDetails = await getRoleData(req.db, identifier);
+
+        if(!roleDetails){
+            throw new AppError('role does not exists', 409)
+        }
+
+        res.status(STATUS_CODES.SUCCESS).json({ message: 'Role retrieved successfully', role: roleDetails})
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+module.exports = getRole
