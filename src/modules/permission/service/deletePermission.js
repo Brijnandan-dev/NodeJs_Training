@@ -1,5 +1,6 @@
+const { db } = require("../../../../database/db");
 
-const deletePermissionData = async(db, permissionId) => {
+const deletePermissionData = async(permissionId) => {
     try {
         return db('permission').where('permissionId', permissionId).del()
     } catch (error) {

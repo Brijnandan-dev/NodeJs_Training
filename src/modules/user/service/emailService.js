@@ -12,7 +12,6 @@ const sendVerificationEmail = async(useremail, verification_token, route) => {
             pass: process.env.MAIL_PASSWORD, //app password created
         }
     })
-    console.log("email", useremail)
 
     const linkToVisit = `${MAIN_ROUTE}${route}/${verification_token}`
     

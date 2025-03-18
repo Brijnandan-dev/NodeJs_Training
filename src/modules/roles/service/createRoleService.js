@@ -1,5 +1,6 @@
+const { db } = require("../../../../database/db");
 
-const createRole = async(db, role) => {
+const createRole = async(role) => {
     try {
         const [roleId] = await db('roles').insert(role).returning(['roleId']);
         return roleId;
@@ -8,7 +9,7 @@ const createRole = async(db, role) => {
     }
 }
 
-const checkRole = async(db, role) => db('roles').where('roleName', role.roleName).first();
+const checkRole = async(role) => db('roles').where('roleName', role.roleName).first();
 
 
 

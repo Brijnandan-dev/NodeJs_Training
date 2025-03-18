@@ -1,6 +1,7 @@
+const { db } = require("../../../../database/db")
 
 
-const assignPermission = async (db, userId, permissionId) => {
+const assignPermission = async (userId, permissionId) => {
     try {
         await db('user_permission').insert({userId, permissionId})
     } catch (error) {
@@ -8,7 +9,7 @@ const assignPermission = async (db, userId, permissionId) => {
     }
 }
 
-const getPermissionMapping = async(db, userId, permissionId) => {
+const getPermissionMapping = async(userId, permissionId) => {
     try {
         return db('user_permission').where({userId, permissionId}).first()
     } catch (error) {
@@ -16,7 +17,7 @@ const getPermissionMapping = async(db, userId, permissionId) => {
     }
 }
 
-const removeUserPermissionMapping = async(db, userId, permissionId) => {
+const removeUserPermissionMapping = async(userId, permissionId) => {
     try {
         await db('user_permission').where({userId, permissionId}).del();
     } catch (error) {

@@ -7,13 +7,13 @@ const updateRole = async (req, res, next) => {
     try {
         const { roleId } = req.params;
         const { roleName, description } = req.body
-        const roleDetails = await getRoleData(req.db, roleId)
+        const roleDetails = await getRoleData(roleId)
 
         if (!roleDetails) {
             throw new AppError(MESSAGES.ROLE_NOT_FOUND, STATUS_CODES.NOT_FOUND)
         }
 
-        await updateRoleData(req.db, roleId, roleName, description)
+        await updateRoleData(roleId, roleName, description)
         res.status(STATUS_CODES.SUCCESS).json({ message: 'Role updated successfully' });
     } catch (error) {
         next(error)

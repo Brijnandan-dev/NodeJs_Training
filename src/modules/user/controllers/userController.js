@@ -11,21 +11,20 @@ const signUp = async(req, res, next) => {
       const { useremail } = req.body;
 
       //initially store in pending users if not already present in both users or in pending_users table
-      const verification_token = await UserService.storePendingUser(req.db, req.body);
+      const verification_token = await UserService.storePendingUser(req.body);
 
-      await sendVerificationEmail(useremail, verification_token, 'verify/email');//this will handle the logic for sending email
+      await sendVerificationEmail(useremail, verification_token, 'verify/email'); //this will handle the logic for sending email
 
       res.status(STATUS_CODES.SUCCESS).json({ message: 'Verification email sent. Please check your mail inbox.' });
       
     } catch (error) {
-      console.log("error", error)
       next(error)
     }
 }
 
 const verifyUser = async(req, res, next) => {
     try {
-      const result = await UserService.verifyAndRegisterUser(req.db, req.params.token) 
+      const result = await UserService.verifyAndRegisterUser(req.params.token) 
       res.status(STATUS_CODES.SUCCESS).json(result);
     } catch (error) {
       next(error); 
@@ -50,15 +49,12 @@ const generateTokens = async(user) => {
 const loginUser = async(req, res, next) => {
   try {
     const {identifier, password} = req.body;
-    console.log("identifier", identifier)
-    const user = await UserService.getUsersByEmailOrUserName(req.db, identifier);
-    console.log("user", user)
+    const user = await UserService.getUsersByEmailOrUserName(identifier);
     if(!user){
       throw new AppError(MESSAGES.USER_NOT_FOUND, STATUS_CODES.NOT_FOUND)
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    console.log("isPasswordValid", isPasswordValid)
     if(!isPasswordValid){
       throw new AppError(MESSAGES.INVALID_CREDENTIALS, STATUS_CODES.UNAUTHORIZED);
     }
@@ -93,7 +89,7 @@ const viewProfile = async(req, res , next) => {
   try {
     const {user} = req
 
-    const userDetails = await UserService.getUsersById(req.db, user.userId);
+    const userDetails = await UserService.getUsersById(user.userId);
 
     if(!userDetails){
       throw new AppError(MESSAGES.USER_NOT_FOUND, STATUS_CODES.NOT_FOUND)
@@ -120,7 +116,7 @@ const resetPassword = async(req, res, next) => {
 
     if(!userDetails){
       //if not in cache then check in db 
-      userDetails = await UserService.getUsersById(req.db, user.userId);
+      userDetails = await UserService.getUsersById(user.userId);
       if(!userDetails){
         throw new AppError(MESSAGES.USER_NOT_FOUND, STATUS_CODES.NOT_FOUND);
       }
@@ -128,7 +124,7 @@ const resetPassword = async(req, res, next) => {
 
     const newHashedPassword = await bcrypt.hash(newPassword, 10);
     
-    await UserService.resetUserPassword(req.db, user, newHashedPassword)
+    await UserService.resetUserPassword(user, newHashedPassword)
 
     res.json({ message: "Password has been reset successfully" });
   } catch (error) {
@@ -176,7 +172,7 @@ const logoutUser = async(req, res, next) => {
     if(!userExists){
       return res.status(400).json({ message: 'User already logged out' });
     }
-console.log("34567890")
+
     // Delete user data from Redis
     await redisClient.del(`user:${user.userId}`);
 
@@ -203,7 +199,7 @@ const updateUserProfile = async(req, res, next) => {
 
     if(!userDetails){
       //if not in cache then check in db 
-      userDetails = await UserService.getUsersById(req.db, user.userId);
+      userDetails = await UserService.getUsersById(user.userId);
       if(!userDetails){
         throw new AppError(MESSAGES.USER_NOT_FOUND, STATUS_CODES.NOT_FOUND);
       }
@@ -211,7 +207,7 @@ const updateUserProfile = async(req, res, next) => {
 
     newUserDetails.userId = user.userId
 
-    await UserService.updateUser(req.db, newUserDetails)
+    await UserService.updateUser(newUserDetails)
     redisClient.SET(`user:${user.userId}`, JSON.stringify({ userId: user.userId, useremail: newUserDetails.useremail, isActive: user.isActive }));
 
     res.status(STATUS_CODES.SUCCESS).json({
@@ -228,12 +224,3 @@ const updateUserProfile = async(req, res, next) => {
 }
 
 module.exports = { signUp, verifyUser, loginUser, resetPassword, refreshAccessToken, generateTokens, logoutUser, updateUserProfile, viewProfile };
-
-
-//routes
-//useModule related work
-//middleware / individual files
-//contrioller
-//global error handling in nodejs 
-//in reddis we can set expiry for token and which will verify by its own for token expiry
-//400 500 error codes

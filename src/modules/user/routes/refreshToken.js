@@ -12,5 +12,4 @@ router.get('/refresh-token',verifyAccessToken, async (req, res, next) => {
 });
 
 
-// in this i have done preprocssing of data wihout using middleware here i'm validation data using express-validator and then doing the controller work
 module.exports = router;

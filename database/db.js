@@ -1,3 +1,5 @@
+const knex = require('knex');
+
 require('dotenv').config(); // Load environment variables
 
 const dbConfig ={
@@ -19,5 +21,6 @@ const dbConfig ={
   }
 };
 
+const db = knex(dbConfig);
 
-module.exports = {dbConfig};
+module.exports = {dbConfig, db};

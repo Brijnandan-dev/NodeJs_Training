@@ -1,5 +1,6 @@
+const { db } = require("../../../../database/db");
 
-const deleteRoleData = async(db, roleId) => {
+const deleteRoleData = async(roleId) => {
     try {
         return await db('roles').where('roleId', roleId).del()
     } catch (error) {

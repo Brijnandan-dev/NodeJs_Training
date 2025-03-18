@@ -1,6 +1,7 @@
 const { validate: isUUID } = require('uuid');
+const { db } = require('../../../../database/db');
 
-const getPermissionData = async(db, identifier) => {
+const getPermissionData = async(identifier) => {
     try {
         if (isUUID(identifier)) {
             return db('permission').where('permissionId', identifier).first();

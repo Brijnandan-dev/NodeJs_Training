@@ -20,7 +20,6 @@ app.use('/api/users', userRoutes);
 
 describe('User Login Controller', () => {
   beforeEach(() => {
-    console.log("brij2345678")
     jest.clearAllMocks();
   });
   it('should print on console',() =>{

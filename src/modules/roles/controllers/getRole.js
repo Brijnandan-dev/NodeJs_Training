@@ -7,7 +7,7 @@ const getRole = async(req, res, next) => {
 
         const { identifier } = req.body;
 
-        const roleDetails = await getRoleData(req.db, identifier);
+        const roleDetails = await getRoleData(identifier);
 
         if(!roleDetails){
             throw new AppError(MESSAGES.ROLE_NOT_FOUND, STATUS_CODES.NOT_FOUND)

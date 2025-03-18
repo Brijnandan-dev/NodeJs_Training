@@ -6,7 +6,7 @@ const verifyPermission = (requiredPermission) => async(req, res, next) => {
     try {
         const {userId} = req.user
 
-        const permissionMapping = await getUserPermission(req.db, userId);
+        const permissionMapping = await getUserPermission(userId);
         const hasRequiredPermission = permissionMapping.some(
             permission => permission.permissionName === requiredPermission
         );

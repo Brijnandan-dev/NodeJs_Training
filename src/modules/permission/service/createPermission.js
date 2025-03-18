@@ -1,5 +1,6 @@
+const { db } = require("../../../../database/db");
 
-const addPermission = async(db, permission) => {
+const addPermission = async(permission) => {
     try {
         return db('permission').insert(permission).returning('*')
     } catch (error) {

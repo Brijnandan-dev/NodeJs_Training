@@ -6,7 +6,7 @@ const getPermission = async(req, res, next) => {
     try {
         const { identifier } = req.body;
 
-        const permissionDetails = await getPermissionData(req.db, identifier);
+        const permissionDetails = await getPermissionData(identifier);
 
         if(!permissionDetails){
             throw new AppError(MESSAGES.PERMISSION_NOT_FOUND, STATUS_CODES.NOT_FOUND)

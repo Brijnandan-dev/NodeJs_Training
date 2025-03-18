@@ -1,12 +1,13 @@
 const {v4: uuid} = require('uuid');
 const AppError = require('../../../../utils/appErrors');
 const bcrypt = require('bcrypt');
+const { db } = require('../../../../database/db');
 
 const getAllUsers = () => db('users').select('*');
 
-const getUsersByEmailOrUserName = (db, identifier) => db('users').where('username', identifier).orWhere('useremail', identifier).first();
+const getUsersByEmailOrUserName = (identifier) => db('users').where('username', identifier).orWhere('useremail', identifier).first();
 
-const getUsersById = (db, userId) => db('users')
+const getUsersById = (userId) => db('users')
     .select('userId', 'username', 'useremail', 'isEmailVerified', 'isActive', 'is_verified')
     .where('userId', userId)
     .first();
@@ -19,11 +20,11 @@ const createUser = (user) =>{
     return db('users').insert(newUser).returning('*');
 } 
 
-const storePendingUser = async(db, user) => {
+const storePendingUser = async(user) => {
     try {
         const existingUser = await db('users').where('useremail', user.useremail).first()
         const pendingUser = await db('pending_users').where('useremail', user.useremail).first()
-        console.log("23456789")
+
         if(existingUser) {
             throw new AppError('User already registered', 409)
         } 
@@ -45,12 +46,11 @@ const storePendingUser = async(db, user) => {
 
         return verification_token; //for sending in mail used for verification
     } catch (error) {
-        // console.log('error', error)
         throw error
     }
 }
 
-const verifyAndRegisterUser = async(db, token) => {
+const verifyAndRegisterUser = async(token) => {
     try {
         const pendingUser = await db('pending_users').where('verification_token', token).first();
         const tokenExpiryTime = new Date(Date.now() - 24 * 60 * 60 * 1000);
@@ -76,26 +76,24 @@ const verifyAndRegisterUser = async(db, token) => {
     }
 }
 
-const resetUserPassword = async(db, user, newPassword) => {
+const resetUserPassword = async(user, newPassword) => {
     try {
         await db('users').where('userId', user.userId).update({ password: newPassword })
     } catch (error) {
-        console.log("4567890")
         throw error
     }
 }
 
-const updateUser = async(db, newDetails) => {
+const updateUser = async(newDetails) => {
     try {
-        await db('users').where('userId', userId).update(newDetails)
+        await db('users').where('userId', newDetails.userId).update(newDetails)
     } catch (error) {
         throw error
     }
 }
 
-const getUserPermission = async(db, userId) => {
+const getUserPermission = async(userId) => {
     try {
-        console.log("userId", userId)
         const result = await db('permission as p')
             .join('user_permission as up', 'up.permissionId', 'p.permissionId')
             .join('users as u', 'u.userId', 'up.userId')
@@ -110,5 +108,3 @@ const getUserPermission = async(db, userId) => {
 }
 
 module.exports = { getAllUsers, storePendingUser, createUser, verifyAndRegisterUser, getUsersByEmailOrUserName, resetUserPassword, getUsersById, updateUser, getUserPermission };
-
-//here all the db operations

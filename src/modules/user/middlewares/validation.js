@@ -9,7 +9,7 @@ const validate = async(schema, data) => {
             path: err.path,
             message: err.message,
         };
-        console.log("error.message,", err)
+
         throw new AppError('Validation failed', 400, errors);
     }
   };

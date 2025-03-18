@@ -14,24 +14,24 @@ const assignPermissionToUser = async(req, res, next) => {
 
         if(!userDetails){
             //if not in cache then check in db 
-            userDetails = await getUsersById(req.db, userId);
+            userDetails = await getUsersById(userId);
             if(!userDetails){
                 throw new AppError(MESSAGES.USER_NOT_FOUND, STATUS_CODES.NOT_FOUND);
             }
         }
 
-        const permissionDetails = await getPermissionData(req.db, permissionId);
+        const permissionDetails = await getPermissionData(permissionId);
 
         if(!permissionDetails){
             throw new AppError(MESSAGES.PERMISSION_NOT_FOUND, STATUS_CODES.NOT_FOUND)
         }
 
-        const existing = await getPermissionMapping(req.db, userId, permissionId);
+        const existing = await getPermissionMapping(userId, permissionId);
         if (existing) {
             throw new AppError(MESSAGES.PERMISSION_ALREADY_ASSIGNED, STATUS_CODES.CONFLICT);
         }
 
-        await assignPermission(req.db, userId, permissionId);
+        await assignPermission(userId, permissionId);
         res.status(STATUS_CODES.SUCCESS).json({ message: 'Permission assigned successfully' });
     } catch (error) {
         next(error);
@@ -44,13 +44,13 @@ const removeUserPermission = async(req, res, next) => {
     try {
         const {userId, permissionId} = req.body
 
-        let userPermissionMapping = await getPermissionMapping(req.db, userId, permissionId);
+        let userPermissionMapping = await getPermissionMapping(userId, permissionId);
         if(!userPermissionMapping){
             throw new AppError('Permission not assigned to user', STATUS_CODES.NOT_FOUND);
         }
 
         
-        await removeUserPermissionMapping(req.db, userId, permissionId);
+        await removeUserPermissionMapping(userId, permissionId);
         res.status(STATUS_CODES.SUCCESS).json({ message: 'Permission removed for user successfully' });
     } catch (error) {
         next(error);
