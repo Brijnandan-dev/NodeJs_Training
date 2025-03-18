@@ -1,6 +1,7 @@
 const express = require('express');
 const userRoutes = require('./src/modules/user/routes');
 const rolesRoutes = require('./src/modules/roles/routes');
+const permissionRoutes =require('./src/modules/permission/routes');
 const config = require('config');
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
@@ -31,8 +32,9 @@ const PORT = config.get('server.port') || 3000;
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
   // User Routes
-  app.use('/', userRoutes);
+  app.use('/user', userRoutes);
   app.use('/roles', rolesRoutes)
+  app.use('/permission', permissionRoutes)
 
   app.use(globalErrorHandler); //global error handler this will handle all the errors
 

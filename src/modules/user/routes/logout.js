@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 const AppError = require('../../../../utils/appErrors');
-const {verifyAccessToken} = require('../middlewares/authMiddleware');
+const {verifyAccessToken} = require('../../../../authentiction/authMiddleware');
 
-router.post('/logout',
+router.post('/',
     verifyAccessToken,
     async(req, res, next) => {
         try {

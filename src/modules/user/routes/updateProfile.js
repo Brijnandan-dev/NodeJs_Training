@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const {verifyAccessToken} = require('../middlewares/authMiddleware');
+const {verifyAccessToken} = require('../../../../authentiction/authMiddleware');
 const validate = require('../middlewares/validation');
 const { updateProfileSchema } = require('../schema/schema');
 
-router.put('/update-profile', 
+router.put('/', 
     verifyAccessToken,
     async(req, res, next) => {
         try {

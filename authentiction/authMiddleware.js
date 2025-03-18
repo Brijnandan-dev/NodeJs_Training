@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
-const AppError = require('../../../../utils/appErrors');
-const { MESSAGES, STATUS_CODES } = require('../../../../constants/constants');
+const AppError = require('../utils/appErrors');
+const { MESSAGES, STATUS_CODES } = require('../constants/constants');
 
 const verifyAccessToken = async(req, res, next) => {
     try {

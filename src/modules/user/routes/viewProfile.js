@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const {verifyAccessToken} = require('../middlewares/authMiddleware');
+const {verifyAccessToken} = require('../../../../authentiction/authMiddleware');
 
-router.get('/view-profile', 
+router.get('/', 
     verifyAccessToken,
     async(req, res, next) => {
         try {

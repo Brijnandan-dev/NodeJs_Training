@@ -6,7 +6,10 @@ const getAllUsers = () => db('users').select('*');
 
 const getUsersByEmailOrUserName = (db, identifier) => db('users').where('username', identifier).orWhere('useremail', identifier).first();
 
-const getUsersById = (db, userId) => db('users').where('userId', userId).first();
+const getUsersById = (db, userId) => db('users')
+    .select('userId', 'username', 'useremail', 'isEmailVerified', 'isActive', 'is_verified')
+    .where('userId', userId)
+    .first();
 
 const createUser = (user) =>{
     const newUser = {
@@ -84,13 +87,28 @@ const resetUserPassword = async(db, user, newPassword) => {
 
 const updateUser = async(db, newDetails) => {
     try {
-        const {username, useremail, userId} = newDetails
         await db('users').where('userId', userId).update(newDetails)
     } catch (error) {
         throw error
     }
 }
 
-module.exports = { getAllUsers, storePendingUser, createUser, verifyAndRegisterUser, getUsersByEmailOrUserName, resetUserPassword, getUsersById, updateUser };
+const getUserPermission = async(db, userId) => {
+    try {
+        console.log("userId", userId)
+        const result = await db('permission as p')
+            .join('user_permission as up', 'up.permissionId', 'p.permissionId')
+            .join('users as u', 'u.userId', 'up.userId')
+            .select('p.permissionName')
+            .where('u.userId', userId);
+
+        return result;
+    } catch (error) {
+        throw error;
+        
+    }
+}
+
+module.exports = { getAllUsers, storePendingUser, createUser, verifyAndRegisterUser, getUsersByEmailOrUserName, resetUserPassword, getUsersById, updateUser, getUserPermission };
 
 //here all the db operations

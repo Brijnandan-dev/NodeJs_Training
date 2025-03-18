@@ -1,7 +1,8 @@
 
 const createRole = async(db, role) => {
     try {
-        return db('roles').insert(role).returning('*')
+        const [roleId] = await db('roles').insert(role).returning(['roleId']);
+        return roleId;
     } catch (error) {
         throw error
     }

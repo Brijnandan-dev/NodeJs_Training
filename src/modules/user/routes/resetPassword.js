@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const {verifyAccessToken} = require('../middlewares/authMiddleware');
+const {verifyAccessToken} = require('../../../../authentiction/authMiddleware');
 const { resetPasswordSchema } = require('../schema/schema');
 const validate = require('../middlewares/validation');
 ///use put and //token inside header not in body(use here not email)

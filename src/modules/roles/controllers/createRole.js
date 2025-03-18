@@ -1,12 +1,12 @@
 const { STATUS_CODES } = require("../../../../constants/constants");
 const AppError = require("../../../../utils/appErrors");
 const createRoleService = require("../service/createRoleService");
-const { getRoleUsingName } = require("../service/getRoleService");
+const { getRoleData } = require("../service/getRoleService");
 
 const createRole = async(req, res, next) => {
     try {
         const role = req.body
-        const existingRole = await getRoleUsingName(req.db, role)
+        const existingRole = await getRoleData(req.db, role.roleName)
 
         if(existingRole){
             throw new AppError('Role already exists', 409)

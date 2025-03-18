@@ -15,7 +15,7 @@ const signUp = async(req, res, next) => {
 
       await sendVerificationEmail(useremail, verification_token, 'verify/email');//this will handle the logic for sending email
 
-      res.status(200).json({ message: 'Verification email sent. Please check your mail inbox.' });
+      res.status(STATUS_CODES.SUCCESS).json({ message: 'Verification email sent. Please check your mail inbox.' });
       
     } catch (error) {
       console.log("error", error)
@@ -26,7 +26,7 @@ const signUp = async(req, res, next) => {
 const verifyUser = async(req, res, next) => {
     try {
       const result = await UserService.verifyAndRegisterUser(req.db, req.params.token) 
-      res.status(200).json(result);
+      res.status(STATUS_CODES.SUCCESS).json(result);
     } catch (error) {
       next(error); 
     }
@@ -81,7 +81,7 @@ const loginUser = async(req, res, next) => {
       maxAge: REFRESH_TOKEN_EXPIRATION
     });
     
-    res.status(200).json({ message: 'Login successful' }); 
+    res.status(STATUS_CODES.SUCCESS).json({ message: 'Login successful' }); 
   
   } catch (error) {
     next(error); 
@@ -99,9 +99,7 @@ const viewProfile = async(req, res , next) => {
       throw new AppError(MESSAGES.USER_NOT_FOUND, STATUS_CODES.NOT_FOUND)
     }
 
-    delete userDetails.password;
-
-    res.status(200).json({
+    res.status(STATUS_CODES.SUCCESS).json({
       message: 'User profile retrieved successfully',
       user: userDetails,
     });
@@ -162,7 +160,7 @@ const refreshAccessToken = async(req, res, next) => {
 
     res.setHeader('Authorization', `Bearer ${accessToken}`); //token set inside response header not in response
 
-    res.status(200).json({ message: 'Access Token refreshed successfully' }); 
+    res.status(STATUS_CODES.SUCCESS).json({ message: 'Access Token refreshed successfully' }); 
   } catch (error) {
     next(error)
   }
@@ -189,7 +187,7 @@ console.log("34567890")
       path: "/" 
     })
 
-    res.status(200).json({ message: 'Logout successful' });
+    res.status(STATUS_CODES.SUCCESS).json({ message: 'Logout successful' });
   } catch (error) {
     next(error)
   }
@@ -216,7 +214,7 @@ const updateUserProfile = async(req, res, next) => {
     await UserService.updateUser(req.db, newUserDetails)
     redisClient.SET(`user:${user.userId}`, JSON.stringify({ userId: user.userId, useremail: newUserDetails.useremail, isActive: user.isActive }));
 
-    res.status(200).json({
+    res.status(STATUS_CODES.SUCCESS).json({
       message: 'Profile updated successfully', user: {
         ...newUserDetails,
         userId: user.userId

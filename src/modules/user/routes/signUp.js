@@ -4,7 +4,7 @@ const userController = require('../controllers/userController');
 const validate = require('../middlewares/validation');
 const {userSignUpSchema} = require('../schema/schema');
 
-router.post('/sign-up', 
+router.post('/', 
     async(req, res, next) => {
         try {
             await validate(userSignUpSchema, req.body)

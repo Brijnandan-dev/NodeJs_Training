@@ -3,12 +3,12 @@
  * @returns { Promise<void> }
  */
 exports.up = function(knex) {
-    return knex.schema.createTable('user_roles', (table) => {
-        table.uuid('userRoleId').primary().defaultTo(knex.raw('gen_random_uuid()'));
-        table.uuid('userId').notNullable();
+    return knex.schema.createTable('role_permission', (table) => {
+        table.uuid('rolePermissionId').primary().defaultTo(knex.raw('gen_random_uuid()'));
         table.uuid('roleId').notNullable();
-        table.foreign('userId').references('userId').inTable('users').onDelete('CASCADE');
+        table.uuid('permissionId').notNullable();
         table.foreign('roleId').references('roleId').inTable('roles').onDelete('CASCADE');
+        table.foreign('permissionId').references('permissionId').inTable('permission').onDelete('CASCADE');
     })
 };
 
@@ -17,5 +17,5 @@ exports.up = function(knex) {
  * @returns { Promise<void> }
  */
 exports.down = function(knex) {
-    return knex.schema.dropTableIfExists('user_roles');
+  
 };
