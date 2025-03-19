@@ -9,7 +9,8 @@
     "dev": "nodemon app.js",
     "migrate": "knex migrate:latest",
     "migrate-and-seed": "knex migrate:latest && knex seed:run",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint . --fix"
   },
   "author": "brijnandan",
   "license": "ISC",
@@ -34,5 +35,8 @@
     "swagger-ui-express": "^5.0.1",
     "uuid": "^11.1.0",
     "yup": "^1.6.1"
+  },
+  "devDependencies": {
+    "eslint": "^9.22.0"
   }
 }

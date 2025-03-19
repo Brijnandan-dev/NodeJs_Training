@@ -1,18 +1,19 @@
-const {Router} = require('express');
+const { Router } = require('express');
 const validate = require('../../user/middlewares/validation');
 const { permissionSchema } = require('../schema/permissionSchema');
 const createPermission = require('../controllers/createPermission');
-const { verifyAccessToken } = require('../../../../authentiction/authMiddleware');
+const {
+  verifyAccessToken,
+} = require('../../../../authentiction/authMiddleware');
 const router = Router();
 
-
-router.post('/', verifyAccessToken, async(req, res, next) => {
-    try {
-        await validate(permissionSchema, req.body);
-        await createPermission(req, res, next)
-    } catch (error) {
-        next(error)
-    }
-} )
+router.post('/', verifyAccessToken, async (req, res, next) => {
+  try {
+    await validate(permissionSchema, req.body);
+    await createPermission(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = router;

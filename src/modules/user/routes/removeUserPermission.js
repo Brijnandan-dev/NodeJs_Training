@@ -1,20 +1,21 @@
-
 const express = require('express');
 const router = express.Router();
 const validate = require('../middlewares/validation');
-const { verifyAccessToken } = require('../../../../authentiction/authMiddleware');
+const {
+  verifyAccessToken,
+} = require('../../../../authentiction/authMiddleware');
 const { userPermissionSchema } = require('../schema/userPermissionSchema');
-const { removeUserPermission } = require('../controllers/userPermissionController');
+const {
+  removeUserPermission,
+} = require('../controllers/userPermissionController');
 
+router.delete('/', verifyAccessToken, async (req, res, next) => {
+  try {
+    await validate(userPermissionSchema, req.body),
+    await removeUserPermission(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
 
-router.delete('/',  verifyAccessToken, async(req, res, next) => {
-        try {
-            await validate(userPermissionSchema, req.body),
-            await removeUserPermission(req, res, next)
-        } catch (error) {
-            next(error);
-        }
-    }
-);
-
-module.exports = router
+module.exports = router;

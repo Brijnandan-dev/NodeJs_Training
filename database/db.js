@@ -2,7 +2,7 @@ const knex = require('knex');
 
 require('dotenv').config(); // Load environment variables
 
-const dbConfig ={
+const dbConfig = {
   client: process.env.DB_CLIENT, // Default to PostgreSQL
   connection: {
     host: process.env.DB_HOST,
@@ -17,10 +17,10 @@ const dbConfig ={
   },
   tableName: 'knex_migrations',
   seeds: {
-    directory: './seeds'   // Pointing to the seeds folder
-  }
+    directory: './seeds', // Pointing to the seeds folder
+  },
 };
 
 const db = knex(dbConfig);
 
-module.exports = {dbConfig, db};
+module.exports = { dbConfig, db };
