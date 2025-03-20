@@ -20,7 +20,13 @@ const verifyAccessToken = async (req, res, next) => {
     req.user = decoded; // Attach user data to request
     next();
   } catch (error) {
-    next(error);
+    if (error.name === 'TokenExpiredError') {
+      next(new AppError(MESSAGES.TOKEN_EXPIRED, STATUS_CODES.UNAUTHORIZED));
+    } else if (error.name === 'JsonWebTokenError') {
+      next(new AppError(MESSAGES.INVALID_TOKEN, STATUS_CODES.UNAUTHORIZED));
+    } else {
+      next(new AppError(MESSAGES.AUTHENTICATION_FAILED, STATUS_CODES.UNAUTHORIZED));
+    }
   }
 };
 

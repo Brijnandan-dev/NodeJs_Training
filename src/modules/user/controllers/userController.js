@@ -8,6 +8,7 @@ const {
   STATUS_CODES,
   ACCESS_TOKEN_EXPIRATION,
   REFRESH_TOKEN_EXPIRATION,
+  COOKIE_EXPIRATION,
 } = require('../../../../constants/constants');
 const redisClient = require('../../../../utils/redisClient');
 
@@ -91,7 +92,7 @@ const loginUser = async (req, res, next) => {
       httpOnly: true,
       secure: true,
       sameSite: 'Strict',
-      maxAge: REFRESH_TOKEN_EXPIRATION,
+      maxAge: COOKIE_EXPIRATION,
     });
 
     res.status(STATUS_CODES.SUCCESS).json({ message: 'Login successful' });

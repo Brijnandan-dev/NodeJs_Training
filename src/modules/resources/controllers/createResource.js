@@ -9,7 +9,7 @@ const createResource = async (req, res, next) => {
     const existingResource = await getResourceData(resource.resourceName);
 
     if (existingResource) {
-      throw new AppError('Resource already exists', 409);
+      throw new AppError('Resource already exists', STATUS_CODES.CONFLICT);
     }
 
     const resourceData = await addResource(resource);

@@ -1,4 +1,4 @@
-const globalErrorHandler = (err, req, res) => {
+const globalErrorHandler = (err, req, res, next) => {
   let { statusCode, message, errors } = err;
 
   // Default values if missing

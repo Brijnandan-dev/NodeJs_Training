@@ -11,7 +11,7 @@ const createPermission = async (req, res, next) => {
     );
 
     if (existingPermission) {
-      throw new AppError('Permission already exists', 409);
+      throw new AppError('Permission already exists', STATUS_CODES.CONFLICT);
     }
 
     const permissionData = await addPermission(permission);

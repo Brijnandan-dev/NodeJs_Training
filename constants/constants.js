@@ -26,15 +26,20 @@ const MESSAGES = {
   RESOURCE_NOT_FOUND: 'resource does not exists',
   ROLE_ALREADY_ASSIGNED: 'Role already assigned to user',
   PERMISSION_ALREADY_ASSIGNED: 'Permission already assigned',
+  TOKEN_EXPIRED: 'Access token has expired',
+  INVALID_TOKEN: 'Invalid access token',
+  AUTHENTICATION_FAILED: 'Authentication failed'
 };
 
-const ACCESS_TOKEN_EXPIRATION = 60 * 60 * 1000; // Token expiry time for JWT
-const REFRESH_TOKEN_EXPIRATION = 7 * 24 * 60 * 60 * 1000; // Token expiry time for JWT
+const ACCESS_TOKEN_EXPIRATION = '1h'; // Token expiry time for JWT 1 hour
+const REFRESH_TOKEN_EXPIRATION = '7d';// Token expiry time for JWT 
+const COOKIE_EXPIRATION = 7 * 24 * 60 * 60 * 1000; //7d in seconds
 
 module.exports = {
   STATUS_CODES,
   MESSAGES,
   ACCESS_TOKEN_EXPIRATION,
   REFRESH_TOKEN_EXPIRATION,
+  COOKIE_EXPIRATION,
   MAIN_ROUTE,
 };

@@ -2,6 +2,7 @@ const { v4: uuid } = require('uuid');
 const AppError = require('../../../../utils/appErrors');
 const bcrypt = require('bcrypt');
 const { db } = require('../../../../database/db');
+const { STATUS_CODES } = require('../../../../constants/constants');
 
 const getAllUsers = () => db('users').select('*');
 
@@ -42,13 +43,13 @@ const storePendingUser = async (user) => {
       .first();
 
     if (existingUser) {
-      throw new AppError('User already registered', 409);
+      throw new AppError('User already registered',  STATUS_CODES.CONFLICT);
     }
 
     if (pendingUser) {
       throw new AppError(
         'A verification mail has already sent, Check you mail for verification',
-        409
+        STATUS_CODES.CONFLICT
       );
     }
 
