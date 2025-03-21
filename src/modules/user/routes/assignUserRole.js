@@ -9,7 +9,7 @@ const { assignRoleToUser } = require('../controllers/userRoleController');
 const authorize = require('../../../../lib/authorize');
 
 router.post(
-  '/',
+  '/assign-role',
   verifyAccessToken,
   authorize('Employee Management', ['update']),
   async (req, res, next) => {

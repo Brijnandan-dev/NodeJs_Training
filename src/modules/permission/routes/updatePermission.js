@@ -10,7 +10,7 @@ const {
 } = require('../../../../authentiction/authMiddleware');
 const router = Router();
 
-router.put('/:permissionId', verifyAccessToken, async (req, res, next) => {
+router.put('/update-permission/:permissionId', verifyAccessToken, async (req, res, next) => {
   try {
     await validate(permissionParamsSchema, req.params);
     await validate(updatePermissionSchema, req.body);

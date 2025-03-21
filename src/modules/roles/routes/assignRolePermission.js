@@ -3,15 +3,15 @@ const router = express.Router();
 const {
   verifyAccessToken,
 } = require('../../../../authentiction/authMiddleware');
-const checkAccess = require('../../user/middlewares/verifyPermission');
 const validate = require('../../user/middlewares/validation');
 const { rolePermissionSchema } = require('../schema/roleSchema');
 const assignPermissionToRole = require('../controllers/assignRolePermission');
+const authorize = require('../../../../lib/authorize');
 
 router.post(
-  '/',
+  '/assign-role-permission',
   verifyAccessToken,
-  checkAccess('write'),
+  authorize('Employee Management', ['update']),
   async (req, res, next) => {
     try {
       await validate(rolePermissionSchema, req.body),

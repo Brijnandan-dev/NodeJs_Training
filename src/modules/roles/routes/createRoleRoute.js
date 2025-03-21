@@ -5,9 +5,10 @@ const createRole = require('../controllers/createRole');
 const {
   verifyAccessToken,
 } = require('../../../../authentiction/authMiddleware');
+const authorize = require('../../../../lib/authorize');
 const router = Router();
 
-router.post('/', verifyAccessToken, async (req, res, next) => {
+router.post('/create-role', verifyAccessToken, authorize('Role Management', ['create']), async (req, res, next) => {
   try {
     await validate(roleSchema, req.body);
     await createRole(req, res, next);

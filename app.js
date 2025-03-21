@@ -9,6 +9,7 @@ const swaggerDocument = require('./swagger.json');
 const redisClient = require('./utils/redisClient');
 const globalErrorHandler = require('./utils/errorHandler');
 const cookieParser = require('cookie-parser');
+const { sendMessage } = require('./kafka/producer');
 require('./database/db'); // Ensure DB is initialized
 
 const app = express();
@@ -30,6 +31,7 @@ app.use('/user', userRoutes);
 app.use('/roles', rolesRoutes);
 app.use('/permission', permissionRoutes);
 app.use('/resource', resourceRoutes);
+sendMessage('test-topic', 'hwwlo how are you');
 
 app.use(globalErrorHandler); //global error handler this will handle all the errors
 

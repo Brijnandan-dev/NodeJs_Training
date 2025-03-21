@@ -4,7 +4,7 @@ const userController = require('../controllers/userController');
 const { verifyUserSchema } = require('../schema/schema');
 const validate = require('../middlewares/validation');
 
-router.get('/email/:token', async (req, res, next) => {
+router.get('/verify/email/:token', async (req, res, next) => {
   try {
     await validate(verifyUserSchema, req.params),
     await userController.verifyUser(req, res, next);

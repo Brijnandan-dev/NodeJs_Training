@@ -5,9 +5,10 @@ const {
 } = require('../../../../authentiction/authMiddleware');
 const { getResourceSchema } = require('../schema/resourceSchema');
 const getResource = require('../controllers/getResource');
+const authorize = require('../../../../lib/authorize');
 const router = Router();
 
-router.get('/', verifyAccessToken, async (req, res, next) => {
+router.get('/get-resource', verifyAccessToken, authorize('Employee Management', ['view']), async (req, res, next) => {
   try {
     await validate(getResourceSchema, req.body);
     await getResource(req, res, next);

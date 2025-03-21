@@ -5,9 +5,10 @@ const getRole = require('../controllers/getRole');
 const {
   verifyAccessToken,
 } = require('../../../../authentiction/authMiddleware');
+const authorize = require('../../../../lib/authorize');
 const router = Router();
 
-router.get('/', verifyAccessToken, async (req, res, next) => {
+router.get('/get-role', verifyAccessToken, authorize('Role Management', ['view']), async (req, res, next) => {
   try {
     await validate(getRoleSchema, req.body);
     await getRole(req, res, next);

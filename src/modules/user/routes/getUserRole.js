@@ -7,7 +7,7 @@ const { getUserRole } = require('../controllers/userRoleController');
 const authorize = require('../../../../lib/authorize');
 
 router.get(
-  '/',
+  '/get-role',
   verifyAccessToken,
   authorize('Employee Management', 'view'),
   async (req, res, next) => {

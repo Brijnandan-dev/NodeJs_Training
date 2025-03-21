@@ -7,7 +7,7 @@ const {
 } = require('../../../../authentiction/authMiddleware');
 const router = Router();
 
-router.get('/', verifyAccessToken, async (req, res, next) => {
+router.get('/get-permission', verifyAccessToken, async (req, res, next) => {
   try {
     await validate(getPermissionSchema, req.body);
     await getPermission(req, res, next);

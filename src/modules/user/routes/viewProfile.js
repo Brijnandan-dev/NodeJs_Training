@@ -6,7 +6,7 @@ const {
 } = require('../../../../authentiction/authMiddleware');
 const authorize = require('../../../../lib/authorize');
 
-router.get('/', verifyAccessToken,  authorize('User Profile', ['view']), async (req, res, next) => {
+router.get('/view-profile', verifyAccessToken,  authorize('User Profile', ['view']), async (req, res, next) => {
   try {
     userController.viewProfile(req, res, next);
   } catch (error) {

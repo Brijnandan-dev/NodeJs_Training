@@ -7,7 +7,7 @@ const {
 } = require('../../../../authentiction/authMiddleware');
 const router = Router();
 
-router.delete('/:permissionId', verifyAccessToken, async (req, res, next) => {
+router.delete('/delete-permission/:permissionId', verifyAccessToken, async (req, res, next) => {
   try {
     await validate(permissionParamsSchema, req.params);
     await deletePermission(req, res, next);

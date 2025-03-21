@@ -8,7 +8,7 @@ const validate = require('../middlewares/validation');
 const { updateProfileSchema } = require('../schema/schema');
 const authorize = require('../../../../lib/authorize');
 
-router.put('/', verifyAccessToken, authorize('User Profile', ['update']), async (req, res, next) => {
+router.put('/update-profile', verifyAccessToken, authorize('User Profile', ['update']), async (req, res, next) => {
   try {
     await validate(updateProfileSchema, req.body),
     await userController.updateUserProfile(req, res, next);

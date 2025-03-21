@@ -13,6 +13,7 @@ const {
 const redisClient = require('../../../../utils/redisClient');
 const { getUserRoles } = require('../service/userRoleService');
 const { getRolePermissions } = require('../../roles/service/assignRolePermissionService');
+const { sendMessage } = require('../../../../kafka/producer');
 
 const signUp = async (req, res, next) => {
   try {
@@ -122,7 +123,7 @@ const viewProfile = async (req, res, next) => {
     if (!userDetails) {
       throw new AppError(MESSAGES.USER_NOT_FOUND, STATUS_CODES.NOT_FOUND);
     }
-
+    sendMessage('test-topic', JSON.stringify(userDetails));
     res.status(STATUS_CODES.SUCCESS).json({
       message: 'User profile retrieved successfully',
       user: userDetails,

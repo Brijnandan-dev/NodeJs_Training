@@ -1,13 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const createPermissionRoute = require('./createPermission');
-const getPermissionRoute = require('./getPermission');
-const deletePermissionRoute = require('./deletePermission');
-const updatePermissionRoute = require('./updatePermission');
+const path = require('path');
+const glob = require('glob');
 
-router.use('/create-permission', createPermissionRoute);
-router.use('/get-permission', getPermissionRoute);
-router.use('/delete-permission', deletePermissionRoute);
-router.use('/update-permission', updatePermissionRoute);
+glob.sync(path.join(__dirname, './*.js')).forEach((file) => {
+  if (file !== __filename) {
+    router.use(require(file));
+  }
+});
 
 module.exports = router;

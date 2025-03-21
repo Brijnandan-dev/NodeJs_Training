@@ -5,7 +5,7 @@ const {
   verifyAccessToken,
 } = require('../../../../authentiction/authMiddleware');
 
-router.post('/', verifyAccessToken, async (req, res, next) => {
+router.post('/logout', verifyAccessToken, async (req, res, next) => {
   try {
     userController.logoutUser(req, res, next);
   } catch (error) {

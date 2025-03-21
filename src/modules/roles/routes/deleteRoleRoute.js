@@ -5,9 +5,10 @@ const deleteRole = require('../controllers/deleteRole');
 const {
   verifyAccessToken,
 } = require('../../../../authentiction/authMiddleware');
+const authorize = require('../../../../lib/authorize');
 const router = Router();
 
-router.delete('/:roleId', verifyAccessToken, async (req, res, next) => {
+router.delete('/delete-role/:roleId', verifyAccessToken, authorize('Role Management', ['update']), async (req, res, next) => {
   try {
     await validate(roleParamsSchema, req.params);
     await deleteRole(req, res, next);

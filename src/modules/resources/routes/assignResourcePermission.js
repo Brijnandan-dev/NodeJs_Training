@@ -9,7 +9,7 @@ const assignPermissionToResource = require('../controllers/assignResourcePermiss
 const authorize = require('../../../../lib/authorize');
 
 router.post(
-  '/',
+  '/assign-resource-permission',
   verifyAccessToken,
   authorize('Employee Management', ['update']),
   async (req, res, next) => {
