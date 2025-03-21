@@ -28,7 +28,8 @@ const MESSAGES = {
   PERMISSION_ALREADY_ASSIGNED: 'Permission already assigned',
   TOKEN_EXPIRED: 'Access token has expired',
   INVALID_TOKEN: 'Invalid access token',
-  AUTHENTICATION_FAILED: 'Authentication failed'
+  AUTHENTICATION_FAILED: 'Authentication failed',
+  DEFAULT_ROLE_NOT_FOUND: 'Default role not found'
 };
 
 const ACCESS_TOKEN_EXPIRATION = '1h'; // Token expiry time for JWT 1 hour

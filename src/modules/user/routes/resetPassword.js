@@ -6,8 +6,9 @@ const {
 } = require('../../../../authentiction/authMiddleware');
 const { resetPasswordSchema } = require('../schema/schema');
 const validate = require('../middlewares/validation');
+const authorize = require('../../../../lib/authorize');
 
-router.put('/reset-password', verifyAccessToken, async (req, res, next) => {
+router.put('/reset-password', verifyAccessToken, authorize('User Profile', ['update']), async (req, res, next) => {
   try {
     await validate(resetPasswordSchema, req.body),
     userController.resetPassword(req, res, next);

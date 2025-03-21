@@ -6,12 +6,12 @@ const {
   verifyAccessToken,
 } = require('../../../../authentiction/authMiddleware');
 const { assignRoleToUser } = require('../controllers/userRoleController');
-const checkAccess = require('../middlewares/verifyPermission');
+const authorize = require('../../../../lib/authorize');
 
 router.post(
   '/',
   verifyAccessToken,
-  checkAccess('write'),
+  authorize('Employee Management', ['update']),
   async (req, res, next) => {
     try {
       await validate(userRoleSchema, req.body);

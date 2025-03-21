@@ -1,3 +1,4 @@
+
 const globalErrorHandler = (err, req, res, next) => {
   let { statusCode, message, errors } = err;
 

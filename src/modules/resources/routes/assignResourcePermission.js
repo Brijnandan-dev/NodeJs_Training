@@ -3,15 +3,15 @@ const router = express.Router();
 const {
   verifyAccessToken,
 } = require('../../../../authentiction/authMiddleware');
-const checkAccess = require('../../user/middlewares/verifyPermission');
 const { resourcePermissionSchema } = require('../schema/resourceSchema');
 const validate = require('../../user/middlewares/validation');
 const assignPermissionToResource = require('../controllers/assignResourcePermission');
+const authorize = require('../../../../lib/authorize');
 
 router.post(
   '/',
   verifyAccessToken,
-  checkAccess('write'),
+  authorize('Employee Management', ['update']),
   async (req, res, next) => {
     try {
       await validate(resourcePermissionSchema, req.body),

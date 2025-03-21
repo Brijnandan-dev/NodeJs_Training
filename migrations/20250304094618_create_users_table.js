@@ -14,8 +14,6 @@ exports.up = function (knex) {
     table.uuid('createdBy').references('userId').inTable('users');
     table.uuid('modifiedBy').references('userId').inTable('users');
     table.boolean('is_verified').defaultTo(false);
-    table.string('resetToken');
-    table.timestamp('resetTokenExpires');
   });
 };
 

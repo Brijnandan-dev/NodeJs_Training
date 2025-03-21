@@ -11,6 +11,8 @@ const {
   COOKIE_EXPIRATION,
 } = require('../../../../constants/constants');
 const redisClient = require('../../../../utils/redisClient');
+const { getUserRoles } = require('../service/userRoleService');
+const { getRolePermissions } = require('../../roles/service/assignRolePermissionService');
 
 const signUp = async (req, res, next) => {
   try {
@@ -72,12 +74,22 @@ const loginUser = async (req, res, next) => {
     //generate token(access token)
     const token = await generateTokens(user);
 
+    /// Fetch roles and permissions for the user
+    const roles = await getUserRoles(user.userId);
+    const rolePermissions = await getRolePermissions(roles);
+    const userPermissions = await UserService.getUserPermissions(user.userId);
+
+    // Combine role and user permissions (eliminate duplicates)
+    const allPermissions = Array.from(new Set([...rolePermissions, ...userPermissions]));
+
     //set user details in redis cache
     redisClient.SET(
       `user:${user.userId}`,
       JSON.stringify({
         userId: user.userId,
         useremail: user.useremail,
+        roles,
+        permissions: allPermissions,
         isActive: user.isActive,
       }),
       {

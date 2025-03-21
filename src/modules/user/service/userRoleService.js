@@ -34,6 +34,15 @@ const getUserRoleMapping = async (userId) => {
   }
 };
 
+const getUserRoles = async (userId) => {
+  const roles = await db('user_roles')
+    .join('roles', 'user_roles.roleId', '=', 'roles.roleId')
+    .select('roles.roleName')
+    .where('user_roles.userId', userId);
+
+  return roles.map((role) => role.roleName);
+};
+
 const getRolePermissionResource = async (
   roles,
   resourceName,
@@ -71,4 +80,5 @@ module.exports = {
   removeUserRoleMapping,
   getUserRoleMapping,
   getRolePermissionResource,
+  getUserRoles
 };

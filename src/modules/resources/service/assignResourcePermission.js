@@ -10,6 +10,15 @@ const getResourcePermissionMapping = async (permissionId, resourceId) => {
   }
 };
 
+const getResourcePermissions = async (resourceId) => {
+  const permissions = await db('resource_permission')
+    .join('permission', 'resource_permission.permissionId', 'permission.permissionId')
+    .select('permission.permissionName')
+    .where('resource_permission.resourceId', resourceId);
+
+  return permissions.map((perm) => perm.permissionName);
+};
+
 const assignPermission = async (permissionId, resourceId) => {
   try {
     await db('resource_permission').insert({ resourceId, permissionId });
@@ -18,4 +27,4 @@ const assignPermission = async (permissionId, resourceId) => {
   }
 };
 
-module.exports = { getResourcePermissionMapping, assignPermission };
+module.exports = { getResourcePermissionMapping, assignPermission, getResourcePermissions };

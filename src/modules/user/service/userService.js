@@ -2,7 +2,7 @@ const { v4: uuid } = require('uuid');
 const AppError = require('../../../../utils/appErrors');
 const bcrypt = require('bcrypt');
 const { db } = require('../../../../database/db');
-const { STATUS_CODES } = require('../../../../constants/constants');
+const { STATUS_CODES, MESSAGES } = require('../../../../constants/constants');
 
 const getAllUsers = () => db('users').select('*');
 
@@ -99,6 +99,15 @@ const verifyAndRegisterUser = async (token) => {
         isEmailVerified: true,
         is_verified: true,
       }); //add into users
+
+      const defaultRole = await trx('roles').select('roleId').where('roleName', 'user').first();
+
+      if (!defaultRole) {
+        throw new AppError(MESSAGES.DEFAULT_ROLE_NOT_FOUND, STATUS_CODES.NOT_FOUND);
+      }
+
+      await trx('user_roles'). insert({userId: pendingUser.userId, roleId: defaultRole.roleId});
+
       await trx('pending_users').where('userId', pendingUser.userId).del(); // Delete from pending_users
     });
 
@@ -126,15 +135,14 @@ const updateUser = async (newDetails) => {
   }
 };
 
-const getUserPermission = async (userId) => {
+const getUserPermissions = async (userId) => {
   try {
-    const result = await db('permission as p')
+    const permissions = await db('permission as p')
       .join('user_permission as up', 'up.permissionId', 'p.permissionId')
-      .join('users as u', 'u.userId', 'up.userId')
       .select('p.permissionName')
-      .where('u.userId', userId);
+      .where('up.userId', userId);
 
-    return result;
+    return permissions.map((permission) => permission.permissionName);
   } catch (error) {
     throw error;
   }
@@ -149,5 +157,5 @@ module.exports = {
   resetUserPassword,
   getUsersById,
   updateUser,
-  getUserPermission,
+  getUserPermissions,
 };
