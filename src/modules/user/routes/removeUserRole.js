@@ -8,7 +8,7 @@ const {
 const { removeUserRole } = require('../controllers/userRoleController');
 const authorize = require('../../../../lib/authorize');
 
-router.delete('/removeUser-role', verifyAccessToken, authorize('Employee Management', ['update']), async (req, res, next) => {
+router.delete('/removeuser-role', verifyAccessToken, authorize('Employee Management', ['update']), async (req, res, next) => {
   try {
     await validate(userRoleSchema, req.body),
     await removeUserRole(req, res, next);

@@ -5,7 +5,7 @@ const {
   verifyAccessToken,
 } = require('../../../../authentiction/authMiddleware');
 
-router.get('/refresh/refresh-token', verifyAccessToken, async (req, res, next) => {
+router.get('/refresh/token', verifyAccessToken, async (req, res, next) => {
   try {
     userController.refreshAccessToken(req, res, next);
   } catch (error) {

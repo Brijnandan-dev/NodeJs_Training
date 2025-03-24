@@ -43,42 +43,11 @@ const getUserRoles = async (userId) => {
   return roles.map((role) => role.roleName);
 };
 
-const getRolePermissionResource = async (
-  roles,
-  resourceName,
-  permissionName
-) => {
-  try {
-    return await db('resource_permission')
-      .innerJoin(
-        'permission',
-        'permission.permissionId',
-        'resource_permission.permissionId'
-      )
-      .innerJoin(
-        'resources',
-        'resources.resourceId',
-        'resource_permission.resourceId'
-      )
-      .innerJoin(
-        'role_permission',
-        'role_permission.permissionId',
-        'permission.permissionId'
-      )
-      .whereIn('role_permission.roleId', roles)
-      .andWhere('resources.resourceName', resourceName)
-      .andWhere('permission.permissionName', permissionName)
-      .first();
-  } catch (error) {
-    throw error;
-  }
-};
 
 module.exports = {
   assignRole,
   getRoleMapping,
   removeUserRoleMapping,
   getUserRoleMapping,
-  getRolePermissionResource,
   getUserRoles
 };

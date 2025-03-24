@@ -10,7 +10,7 @@ const {
 } = require('../controllers/userPermissionController');
 const authorize = require('../../../../lib/authorize');
 
-router.delete('/removeUser-permission', verifyAccessToken, authorize('Employee Management', ['update']), async (req, res, next) => {
+router.delete('/removeuser-permission', verifyAccessToken, authorize('Employee Management', ['update']), async (req, res, next) => {
   try {
     await validate(userPermissionSchema, req.body),
     await removeUserPermission(req, res, next);

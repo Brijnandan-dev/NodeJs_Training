@@ -10,7 +10,7 @@ const {
 } = require('../controllers/userPermissionController');
 const authorize = require('../../../../lib/authorize');
 
-router.post('/assign-permission', verifyAccessToken, authorize('Employee Management', ['update']), async (req, res, next) => {
+router.put('/assign-permission', verifyAccessToken, authorize('Employee Management', ['update']), async (req, res, next) => {
   try {
     await validate(userPermissionSchema, req.body),
     await assignPermissionToUser(req, res, next);
