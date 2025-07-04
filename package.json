@@ -1,0 +1,45 @@
+{
+  "name": "node_js_training",
+  "version": "1.0.0",
+  "description": "train yourself with this training time",
+  "main": "app.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "migrate": "knex migrate:latest",
+    "migrate-and-seed": "knex migrate:latest && knex seed:run",
+    "test": "jest",
+    "lint": "eslint . --fix"
+  },
+  "author": "brijnandan",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.8.2",
+    "bcrypt": "^5.1.1",
+    "celebrate": "^15.0.3",
+    "config": "^3.3.12",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-validator": "^7.2.1",
+    "glob": "^11.0.1",
+    "jest": "^29.7.0",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "kafkajs": "^2.2.4",
+    "knex": "^3.1.0",
+    "nock": "^14.0.1",
+    "nodemailer": "^6.10.0",
+    "nodemon": "^3.1.9",
+    "pg": "^8.13.3",
+    "redis": "^4.7.0",
+    "supertest": "^7.0.0",
+    "swagger-ui-express": "^5.0.1",
+    "uuid": "^11.1.0",
+    "yup": "^1.6.1"
+  },
+  "devDependencies": {
+    "eslint": "^9.22.0"
+  }
+}

@@ -1,0 +1,1197 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Node_JS_Training -> User module",
+    "version": "1.0.0",
+    "description": "API documentation for user module"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/user",
+      "description": "Local server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "paths": {
+    "/sign-up": {
+      "post": {
+        "summary": "User Registration",
+        "description": "This endpoint allows users to sign up by providing a username, email, and password. The request data is validated before being processed.",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 25,
+                    "example": "Brij",
+                    "description": "The user's name. Must be between 3 and 25 characters."
+                  },
+                  "useremail": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "test@yopmail.com",
+                    "description": "A valid email address."
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 6,
+                    "example": "Brij123456789@",
+                    "description": "A secure password with at least 6 characters."
+                  }
+                },
+                "required": ["username", "useremail", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Verification email sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Verification email sent. Please check your mail inbox."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error - Request data is invalid. Possible reasons include an invalid email format, a username not meeting length requirements, or a password that is too short.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Validation failed"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "message": {
+                            "type": "string"
+                          },
+                          "path": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "MultipleValidationErrors": {
+                    "value": {
+                      "status": "error",
+                      "message": "Validation failed",
+                      "errors": [
+                        {
+                          "message": "Username must be at least 3 characters long",
+                          "path": "username"
+                        },
+                        {
+                          "message": "Invalid email format",
+                          "path": "useremail"
+                        },
+                        {
+                          "message": "Password must be at least 6 characters long",
+                          "path": "password"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict error - Occurs when the user is already registered or verification mail has already been sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "nullable": true
+                    }
+                  }
+                },
+                "errors": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "msg": {
+                        "type": "string"
+                      },
+                      "param": {
+                        "type": "string"
+                      },
+                      "location": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "UserAlreadyRegistered": {
+                    "value": {
+                      "status": "error",
+                      "message": "User already registered",
+                      "errors": null
+                    }
+                  },
+                  "VerificationMailAlreadySent": {
+                    "value": {
+                      "status": "error",
+                      "message": "A verification mail has already sent, Check you mail for verification",
+                      "errors": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "nullable": true
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "message": "select * from \"users\" where \"usermail\" = $1 limit $2 - column \"usermail\" does not exist",
+                  "errors": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/verify/email/{token}": {
+      "get": {
+        "summary": "Verify User",
+        "description": "This endpoint allows user to be verified with email.",
+        "tags": ["Authentication"],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The unique verification token sent to the user's email."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email verified successfully.y",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Email verified successfully."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid token"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "message": {
+                            "type": "string"
+                          },
+                          "path": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "TokenRequiredErrors": {
+                    "value": {
+                      "status": "error",
+                      "message": "Token Validation failed",
+                      "errors": [
+                        {
+                          "message": "Token is required and must be a valid string",
+                          "path": "params"
+                        }
+                      ]
+                    }
+                  },
+                  "TokenValidationErrors": {
+                    "value": {
+                      "status": "error",
+                      "message": "Invalid Token",
+                      "errors": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "message": "select * from \"pending_users\" where \"verificationtoken\" = $1 limit $2 - column \"verificationtoken\" does not exist",
+                  "errors": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "summary": "User Login",
+        "description": "Authenticate a user with a username or email and password.",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "identifier": {
+                    "type": "string",
+                    "description": "Username or email for login. Accepts a valid email or username (only letters, numbers, and underscores).",
+                    "example": "john_doe123 or john@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "User's password (minimum 6 characters).",
+                    "example": "mypassword123"
+                  }
+                },
+                "required": ["identifier", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Login successful"
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Authorization": {
+                "description": "JWT authentication token",
+                "schema": {
+                  "type": "string",
+                  "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                }
+              },
+              "Set-Cookie": {
+                "description": "Sets the refresh token in an HTTP-only cookie",
+                "schema": {
+                  "type": "string",
+                  "example": "refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...; HttpOnly; Path=/; Secure"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error: Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid token"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "message": {
+                            "type": "string"
+                          },
+                          "path": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "UserName/EmailError": {
+                    "value": {
+                      "status": "error",
+                      "message": "Validation failed",
+                      "errors": [
+                        {
+                          "msg": "Invalid username or email format",
+                          "path": "identifier"
+                        }
+                      ]
+                    }
+                  },
+                  "PasswordValidationError": {
+                    "value": {
+                      "status": "error",
+                      "message": "Validation failed",
+                      "errors": [
+                        {
+                          "msg": "Password must be at least 6 characters long",
+                          "path": "password"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "nullable": true
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Invalid username/email or password",
+                  "errors": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User not found"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "nullable": true
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "message": "User not found",
+                  "errors": null
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Something went wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/refresh/refresh-token": {
+      "get": {
+        "summary": "Refresh Access Token",
+        "description": "Refresh the access token using the refresh token stored in cookies. The new access token is returned in the response header.",
+        "tags": ["Authentication"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "New access token generated successfully.",
+            "headers": {
+              "Authorization": {
+                "description": "New JWT access token",
+                "schema": {
+                  "type": "string",
+                  "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Access Token refreshed successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or expired token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object"
+                    }
+                  }
+                },
+                "examples": {
+                  "AccessTokenMissing": {
+                    "value": {
+                      "status": "error",
+                      "message": "Unauthorized access",
+                      "errors": null
+                    }
+                  },
+                  "RefreshTokenMissing": {
+                    "value": {
+                      "status": "error",
+                      "message": "Refresh token missing",
+                      "errors": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error: Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "nullable": true
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "message": "Invalid refresh token",
+                  "errors": null
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Something went wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reset/reset-password": {
+      "put": {
+        "summary": "Reset Password",
+        "description": "Resets the user's password. Requires a valid access token in the request header.",
+        "tags": ["User"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "New password for the user",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "newPassword": {
+                    "type": "string",
+                    "minLength": 6,
+                    "description": "New password (at least 6 characters)"
+                  }
+                },
+                "required": ["newPassword"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Password has been reset successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Validation failed"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                            "example": "Password must be at least 6 characters long"
+                          },
+                          "path": {
+                            "type": "string",
+                            "example": "newPassword"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing access token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Unauthorized access"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "example": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User not found"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "example": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Something went wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logout": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Logout a user",
+        "description": "Logs out the authenticated user by clearing the refresh token from cookies and removing the user data from Redis.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logout successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Logout successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User already logged out.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User already logged out"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing access token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Unauthorized access"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "example": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Internal server error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/update-profile": {
+      "put": {
+        "tags": ["User"],
+        "summary": "Update user profile",
+        "description": "Updates the profile information of an authenticated user.",
+        "operationId": "updateUserProfile",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "example": "JohnDoe",
+                    "description": "The username of the user"
+                  },
+                  "useremail": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "john.doe@example.com",
+                    "description": "The email address of the user"
+                  }
+                },
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Profile updated successfully"
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "type": "string",
+                          "example": "12345"
+                        },
+                        "username": {
+                          "type": "string",
+                          "example": "JohnDoe"
+                        },
+                        "useremail": {
+                          "type": "string",
+                          "example": "john.doe@example.com"
+                        }
+                      },
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing access token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Unauthorized access"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "example": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User not found"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "example": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Internal server error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/view-profile": {
+      "get": {
+        "tags": ["User"],
+        "summary": "View user profile",
+        "description": "Retrieves the authenticated user's profile details.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "type": "string",
+                          "example": "12345"
+                        },
+                        "username": {
+                          "type": "string",
+                          "example": "JohnDoe"
+                        },
+                        "useremail": {
+                          "type": "string",
+                          "example": "john.doe@example.com"
+                        },
+                        "isEmailVerified": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "isActive": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "created_at": {
+                          "type": "date",
+                          "example": "2025-03-10T10:43:09.973Z"
+                        },
+                        "updated_at": {
+                          "type": "date",
+                          "example": "2025-03-10T10:43:09.973Z"
+                        },
+                        "createdBy": {
+                          "type": "string",
+                          "example": "5403ffdb-1ee6-417b-89b5-7df99438c1e8"
+                        },
+                        "modifiedBy": {
+                          "type": "string",
+                          "example": "5403ffdb-1ee6-417b-89b5-7df99438c1e8"
+                        },
+                        "is_verified": {
+                          "type": "boolean",
+                          "example": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing access token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Unauthorized access"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "example": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User not found"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "example": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Internal server error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
